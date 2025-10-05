@@ -53,6 +53,6 @@ if __name__ == '__main__':
             log.info('Запуск очередной итерации')
             execute(state)
         except Exception as e:
-            log.info(f'Сбой при выполнении: {e}')
+            log.error(f'Сбой при выполнении: {e}')
         finally:
             time.sleep(settings.sleep_timeout)

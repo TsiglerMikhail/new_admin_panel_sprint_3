@@ -9,7 +9,7 @@ services:
     depends_on:
       database:
         condition: service_healthy
-      elk:
+      elasticsearch:
         condition: service_healthy
     env_file:
       - .env
@@ -29,9 +29,9 @@ services:
       timeout: 5s
       retries: 10
 
-  elk:
+  elasticsearch:
     image: elasticsearch:8.12.2
-    container_name: elk
+    container_name: elasticsearch
     restart: always
     environment:
       - discovery.type=single-node
