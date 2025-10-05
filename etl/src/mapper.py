@@ -8,11 +8,11 @@ base_query = '''SELECT fw.id, fw.rating as imdb_rating,
         fw.title, fw.description,
         COALESCE (json_agg(DISTINCT jsonb_build_object('id', p.id, 'name', p.full_name))
         FILTER (WHERE pfw.role = 'director'), '[]') as directors,
-        COALESCE (json_agg(DISTINCT jsonb_build_object('name', p.full_name))
+        COALESCE (json_agg(DISTINCT p.full_name)
         FILTER (WHERE pfw.role = 'actor'),'[]') as actors_names,
-        COALESCE (json_agg(DISTINCT jsonb_build_object('name', p.full_name))
+        COALESCE (json_agg(DISTINCT p.full_name)
         FILTER (WHERE pfw.role = 'director'),'[]') as directors_names,
-        COALESCE (json_agg(DISTINCT jsonb_build_object('name', p.full_name))
+        COALESCE (json_agg(DISTINCT p.full_name)
         FILTER (WHERE pfw.role = 'writer'), '[]') as writers_names,
         COALESCE (json_agg(DISTINCT jsonb_build_object('id', p.id, 'name', p.full_name))
         FILTER (WHERE pfw.role = 'actor'), '[]') as actors,

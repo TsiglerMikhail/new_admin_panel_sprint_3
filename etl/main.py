@@ -28,9 +28,9 @@ log = logging.getLogger(__name__)
 def execute(state: State):
     with closing(psycopg2.connect(settings.postgres_dsn.unicode_string(), cursor_factory=DictCursor)) as pg_conn, \
             closing(elasticsearch.Elasticsearch(settings.elk_dsn.unicode_string())) as elk_conn:
+        datatransformer = DataTransform()
         for table in TABLES:
             postgresextractor = PostgresExtractor(pg_conn, state, table, settings.chunk_size)
-            datatransformer = DataTransform()
             elksearchloader = ElasticsearchLoader(elk_conn, state, table)
 
             # получаем данные из Postgres
@@ -38,7 +38,7 @@ def execute(state: State):
                 if data:
                     log.debug(f'Новые записи: {data}')
                     # Если есть изменения, преобразуем данные из формата Postgres в формат, пригодный для Elasticsearch
-                    transformed_data, max_modified = datatransformer.transform(columns_name, data)
+                    transformed_data, max_modified = datatransformer.transform(data)
                     # загружаем данные в Elasticsearch
                     elksearchloader.load(transformed_data, max_modified)
 
