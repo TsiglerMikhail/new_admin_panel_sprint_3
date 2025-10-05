@@ -15,4 +15,4 @@ class DataTransform:
         for row in range(0, len(pg_data)):
             for i, value in enumerate(pg_data[row]):
                 if columns_name[i] in self._columns_for_prepare:
-                    pg_data[row][i] = ", ".join(c['name'] for c in pg_data[row][i])
+                    pg_data[row][i] = [c['name'] for c in pg_data[row][i]]

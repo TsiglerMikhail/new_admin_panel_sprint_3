@@ -38,9 +38,9 @@ class ElkFilm(BaseModel):
     title: str
     description: str | None = Field(default=None)
     directors: List[Person] = Field(default_factory=list)
-    actors_names: str = Field(default_factory=str)
-    directors_names: str = Field(default_factory=str)
-    writers_names: str = Field(default_factory=str)
+    actors_names: List[str] = Field(default_factory=list)
+    directors_names: List[str] = Field(default_factory=list)
+    writers_names: List[str] = Field(default_factory=list)
     actors: List[Person] = Field(default_factory=list)
     writers: List[Person] = Field(default_factory=list)
 
