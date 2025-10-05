@@ -1,0 +1,49 @@
+version: '3'
+
+services:
+  etl:
+    container_name: etl
+    build:
+      context: ./etl
+      dockerfile: Dockerfile
+    depends_on:
+      database:
+        condition: service_healthy
+      elk:
+        condition: service_healthy
+    env_file:
+      - .env
+
+  database:
+    image: postgres:16
+    container_name: database
+    env_file:
+      - .env
+    restart: always
+    volumes:
+      - ./database_dump.sql:/docker-entrypoint-initdb.d/init.sql
+      - data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  elk:
+    image: elasticsearch:8.12.2
+    container_name: elk
+    restart: always
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ports:
+      - "9200:9200"
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  data:
